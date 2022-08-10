@@ -4,14 +4,16 @@ from django.conf import settings
 
 
 class Step(models.Model):
-    note = models.CharField(max_length=10)
+    number = models.IntegerField()
+    note = models.CharField(max_length=10, blank=True, null=True)
     accent = models.BooleanField()
     slide = models.BooleanField()
-    octave = models.CharField(max_length=20)
-    timing = models.CharField(max_length=10)
+    octave = models.CharField(max_length=20, blank=True, null=True)
+    timing = models.CharField(max_length=10, blank=True, null=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.note
+        return f"{self.number} - {self.note}"
 
 class Pattern(models.Model):
     title = models.CharField(max_length=200)
@@ -24,8 +26,8 @@ class Pattern(models.Model):
     attack_dial = models.IntegerField()
     tempo_dial = models.IntegerField()
     tempo_entered = models.IntegerField()
-    steps = models.ManyToManyField(Step, related_name="patterns")
-    created_date = models.DateField(auto_now_add=True)
+    steps = models.ManyToManyField(Step, related_name="patterns", blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
